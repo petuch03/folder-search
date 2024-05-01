@@ -14,9 +14,9 @@ class BasicIndexManager : IndexManager {
         }
     }
 
-    override fun search(query: String): List<String> {
+    override fun search(query: String): SearchResult {
         val tokens = tokenize(query)
-        if (tokens.isEmpty()) return emptyList()
+        if (tokens.isEmpty()) return SearchResult(SearchResultEnum.NO_RESULTS)
 
         val results = mutableMapOf<String, Int>()
         tokens.forEach { token ->
@@ -24,10 +24,11 @@ class BasicIndexManager : IndexManager {
                 results[file] = results.getOrDefault(file, 0) + count
             }
         }
-        return results
+        val fileNames = results
             .toList()
             .sortedByDescending { it.second }
             .map { it.first }
             .take(5)
+        return SearchResult(SearchResultEnum.SUCCESS, fileNames)
     }
 }

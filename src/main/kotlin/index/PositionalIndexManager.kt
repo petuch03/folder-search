@@ -16,16 +16,16 @@ class PositionalIndexManager : IndexManager {
         }
     }
 
-    override fun search(query: String): List<String> {
+    override fun search(query: String): SearchResult {
         val tokens = tokenize(query)
-        if (tokens.isEmpty()) return emptyList()
+        if (tokens.isEmpty()) return SearchResult(SearchResultEnum.NO_RESULTS)
 
         val commonFiles = tokens // Tokens from query
             .map { positionalIndex[it]?.keys ?: emptySet() } //List<Set<String>>, where each Set<String> contains the files in which a particular token appears
             .reduce { acc, set -> acc.intersect(set) } //Set<String>, which contains only those files that include all the tokens from the original list
 
 
-        return commonFiles.filter { file ->
+        val fileNames = commonFiles.filter { file ->
             val positionOffsetsLists = tokens.mapIndexed { index, token ->
                 positionalIndex[token]
                     ?.get(file)
@@ -39,5 +39,6 @@ class PositionalIndexManager : IndexManager {
                 .reduce { acc, positions -> acc.intersect(positions.toSet()).toList() // Filters for same position offset of token in single file
             }.isNotEmpty()
         }.toList()
+        return SearchResult(SearchResultEnum.SUCCESS, fileNames)
     }
 }

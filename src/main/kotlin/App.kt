@@ -2,33 +2,62 @@ package petuch03
 
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
-import kotlinx.cli.ArgType.Companion.Choice
 import kotlinx.cli.default
 import kotlinx.cli.required
 import petuch03.documents.FileManager
-import petuch03.index.BasicIndexManager
-import petuch03.index.IndexManager
-import petuch03.index.PositionalIndexManager
+import petuch03.index.*
 import java.io.File
 
 
 class App(private val indexManager: IndexManager) {
     private val fileManager = FileManager()
 
-    fun run(folderPath: String, query: String){
+    fun run(folderPath: String, query: String) {
         val corpus = this.fileManager.createDocumentCorpus(File(folderPath))
         this.indexManager.createIndex(corpus)
         val searchResults = this.indexManager.search(query)
-        println(searchResults)
+        displaySearchResult(searchResults)
+    }
+
+    private fun displaySearchResult(result: SearchResult) {
+        when (result.result) {
+            SearchResultEnum.NO_RESULTS -> println("No results found for your query.")
+            SearchResultEnum.SUCCESS -> {
+                if (result.fileNames.isEmpty()) {
+                    println("No files matched your search query.")
+                } else {
+                    println("Top search results:")
+                    result.fileNames.forEach { fileName ->
+                        println(fileName)
+                    }
+                }
+            }
+
+            SearchResultEnum.ERROR -> println("Error occurred during search.")
+        }
     }
 }
 
 fun main(args: Array<String>) {
     val parser = ArgParser("folder-search")
-    val folderPath by parser.option(ArgType.String, shortName = "f", fullName = "path", description = "Path to the folder").required()
-    val query by parser.option(ArgType.String, shortName = "q", fullName = "query", description = "Search query").required()
-    val indexType by parser.option(ArgType.Choice(listOf("basic", "positional"), {it}), shortName = "t", fullName = "index-type", description = "Type of index manager to use").default("basic")
+    val folderPath by parser.option(
+        ArgType.String,
+        shortName = "f",
+        fullName = "path",
+        description = "Path to the folder"
+    ).required()
+    val query by parser.option(ArgType.String, shortName = "q", fullName = "query", description = "Search query")
+        .required()
+    val indexType by parser.option(
+        ArgType.Choice(listOf("basic", "positional"), { it }),
+        shortName = "t",
+        fullName = "index-type",
+        description = "Type of index manager to use"
+    ).default("basic")
     parser.parse(args)
+
+    require(File(folderPath).exists()) { println("The directory $folderPath does not exist."); return }
+    require(File(folderPath).isDirectory) { println("The provided path $folderPath is not a directory."); return }
 
     val indexManager = when (indexType) {
         "basic" -> BasicIndexManager()
