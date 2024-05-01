@@ -20,11 +20,10 @@ class FileManager {
                     if (file.isSymbolicLink()) {
                         System.err.println("Skipping symbolic link ${file.path}")
                         return@forEach
-                    }
-
-                    if (file.isDirectory) {
+                    } else if (file.isDirectory) {
                         traverseDirectory(file)
                     } else if (file.extension in validExtensions) {
+                        val relativePath = dir.toPath().relativize(file.toPath()).toString()
                         file.bufferedReader(Charsets.UTF_8).use { reader ->
                             val content = StringBuilder()
                             var line = reader.readLine()
@@ -33,7 +32,7 @@ class FileManager {
                                 line = reader.readLine()
                             }
                             if (content.isNotEmpty()) {
-                                documents.add(Document(file, content.toString()))
+                                documents.add(Document(relativePath, content.toString()))
                             }
                         }
                     }

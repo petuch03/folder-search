@@ -16,10 +16,10 @@ class App(private val indexManager: IndexManager) {
         val corpus = this.fileManager.createDocumentCorpus(File(folderPath))
         this.indexManager.createIndex(corpus)
         val searchResults = this.indexManager.search(query)
-        displaySearchResult(searchResults)
+        displaySearchResult(folderPath, searchResults)
     }
 
-    private fun displaySearchResult(result: SearchResult) {
+    private fun displaySearchResult(folderPath: String, result: SearchResult) {
         when (result.result) {
             SearchResultEnum.NO_RESULTS -> println("No results found for your query.")
             SearchResultEnum.SUCCESS -> {
@@ -28,7 +28,7 @@ class App(private val indexManager: IndexManager) {
                 } else {
                     println("Top search results:")
                     result.fileNames.forEach { fileName ->
-                        println(fileName)
+                        println("$folderPath/$fileName")
                     }
                 }
             }

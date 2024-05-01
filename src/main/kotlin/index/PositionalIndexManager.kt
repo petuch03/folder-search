@@ -9,9 +9,9 @@ class PositionalIndexManager : IndexManager {
         corpus.forEach { (file, content) ->
             tokenize(content).forEachIndexed { position, token ->
                 val fileMap = this.positionalIndex.getOrPut(token) { mutableMapOf() }
-                val oldList = fileMap.getOrDefault(file.name, mutableListOf())
+                val oldList = fileMap.getOrDefault(file, mutableListOf())
                 oldList.add(position)
-                fileMap[file.name] = oldList
+                fileMap[file] = oldList
             }
         }
     }
