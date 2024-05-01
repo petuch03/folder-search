@@ -32,7 +32,7 @@ class App(private val indexManager: IndexManager) {
                     }
                 }
             }
-
+            SearchResultEnum.QUERY_NOT_TOKENIZED -> println("Query can't be tokenized.")
             SearchResultEnum.ERROR -> println("Error occurred during search.")
         }
     }

@@ -16,7 +16,7 @@ class BasicIndexManager : IndexManager {
 
     override fun search(query: String): SearchResult {
         val tokens = tokenize(query)
-        if (tokens.isEmpty()) return SearchResult(SearchResultEnum.NO_RESULTS)
+        if (tokens.isEmpty()) return SearchResult(SearchResultEnum.QUERY_NOT_TOKENIZED)
 
         val results = mutableMapOf<String, Int>()
         tokens.forEach { token ->

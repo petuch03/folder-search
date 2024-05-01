@@ -18,7 +18,7 @@ class PositionalIndexManager : IndexManager {
 
     override fun search(query: String): SearchResult {
         val tokens = tokenize(query)
-        if (tokens.isEmpty()) return SearchResult(SearchResultEnum.NO_RESULTS)
+        if (tokens.isEmpty()) return SearchResult(SearchResultEnum.QUERY_NOT_TOKENIZED)
 
         val commonFiles = tokens // Tokens from query
             .map { positionalIndex[it]?.keys ?: emptySet() } //List<Set<String>>, where each Set<String> contains the files in which a particular token appears
