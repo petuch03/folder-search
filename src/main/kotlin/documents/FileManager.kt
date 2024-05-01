@@ -13,9 +13,16 @@ class FileManager {
                     if (file.isDirectory) {
                         traverseDirectory(file)
                     } else if (file.extension in validExtensions) {
-                        val content = file.readText(Charsets.UTF_8)
-                        if (content.isNotEmpty()) {
-                            documents.add(Document(file, content))
+                        file.bufferedReader(Charsets.UTF_8).use { reader ->
+                            val content = StringBuilder()
+                            var line = reader.readLine()
+                            while (line != null) {
+                                content.append(line).append("\n")
+                                line = reader.readLine()
+                            }
+                            if (content.isNotEmpty()) {
+                                documents.add(Document(file, content.toString()))
+                            }
                         }
                     }
                 } catch (e: Exception) {
