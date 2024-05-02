@@ -12,7 +12,7 @@ No specific configuration like API keys or environment variables is required for
 
 ## Usage Syntax:
 ```bash
-java -jar text-search-cli.jar -d <path_to_directory> -q <search_query> [-t <basic/positional>]
+java -jar folder-serach.jar -d <path_to_directory> -q <search_query> [-t <basic/positional>]
 ```
 - `-d`, `--directory`: Path to the directory containing text files to be indexed.
 - `-q`, `--query`: Search query to find in the indexed documents.
