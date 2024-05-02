@@ -42,9 +42,9 @@ fun main(args: Array<String>) {
     val parser = ArgParser("folder-search")
     val folderPath by parser.option(
         ArgType.String,
-        shortName = "f",
-        fullName = "path",
-        description = "Path to the folder"
+        shortName = "d",
+        fullName = "directory",
+        description = "Path to the directory"
     ).required()
     val query by parser.option(ArgType.String, shortName = "q", fullName = "query", description = "Search query")
         .required()
